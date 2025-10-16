@@ -11,11 +11,14 @@ const userRoutes = require("./routes/AdminRoutes/usersRoutes");
 const adminstatus = require("./routes/AdminRoutes/mainDashboardRoutes");
 const productRoutes = require("./routes/AdminRoutes/productRoutes");
 const ordersRoutes= require("./routes/AdminRoutes/ordersRoutes");
+const contactusRoutes= require("./routes/userRoutes/contactusRoutes");
+const supportRoutes= require("./routes/AdminRoutes/supportRoutes");
+
 
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -30,13 +33,19 @@ app.use("/api/admin", userRoutes);
 app.use("/api/admin", adminstatus);
 app.use("/api/admin", productRoutes);
 app.use("/api/admin", ordersRoutes);
+app.use("/api/admin", supportRoutes);
+
+
+
+//Rotes user
+app.use("/api/user", contactusRoutes);
 
 
 
 
 // Start server
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
