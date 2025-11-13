@@ -5,7 +5,7 @@ const Orders = {
  async getAll() {
   const [rows] = await pool.execute(`
     SELECT 
-      o.id AS orderid,
+      order_id,
       CONCAT(u.firstname, ' ', u.lastname) AS customername,
       p.name AS productname,
       o.quantity,

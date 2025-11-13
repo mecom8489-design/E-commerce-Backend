@@ -13,7 +13,7 @@ const productRoutes = require("./routes/AdminRoutes/productRoutes");
 const ordersRoutes= require("./routes/AdminRoutes/ordersRoutes");
 const contactusRoutes= require("./routes/userRoutes/contactusRoutes");
 const supportRoutes= require("./routes/AdminRoutes/supportRoutes");
-
+const OrderedProducts = require("./Ordered-Products/route");
 
 const app = express();
 
@@ -39,7 +39,7 @@ app.use("/api/admin", supportRoutes);
 
 //Rotes user
 app.use("/api/user", contactusRoutes);
-
+app.use("/api/ordered", OrderedProducts);
 
 
 
