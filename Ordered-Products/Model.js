@@ -36,10 +36,41 @@ const Order = {
   },
 
   // Get order by ID
-  getById: async (order_id) => {
-    const [rows] = await db.query("SELECT * FROM orders WHERE order_id = ?", [order_id]);
-    return rows[0];
+  getById: async (user_id) => {
+    const [rows] = await db.query(
+      `SELECT 
+          o.order_id,
+          o.user_id,
+          o.product_id,
+          o.quantity,
+          o.price_per_unit,
+          o.total_price,
+          o.shipping_name,
+          o.shipping_phone,
+          o.shipping_address,
+          o.payment_method,
+          o.payment_status,
+          o.order_status,
+          o.created_at,
+          o.updated_at,
+          p.name AS product_name,
+          p.price AS product_price,
+          p.rating AS product_rating,
+          p.discount AS product_discount,
+          p.description AS product_description,
+          p.category AS product_category,
+          p.stock AS product_stock,
+          p.image AS product_image
+       FROM orders o
+       JOIN products p ON o.product_id = p.id
+       WHERE o.user_id = ? 
+       ORDER BY o.order_id DESC`,
+      [user_id]
+    );
+  
+    return rows; // return all matched orders with product details
   },
+  
 };
 
 module.exports = Order;
