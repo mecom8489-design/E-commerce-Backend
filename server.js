@@ -45,7 +45,7 @@ app.use("/api/ordered", OrderedProducts);
 
 // Start server
 const PORT = process.env.PORT || 5001;
-const DOMAIN ="e-commerce-backend-production-5ef8.up.railway.app/";
+const DOMAIN ="e-commerce-backend-production-6fa0.up.railway.app";
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log("🚀 Server ready");
