@@ -17,6 +17,7 @@ function generateToken(user) {
 exports.signup = async (req, res) => {
   try {
     const { firstname, lastname, mobile, email, password } = req.body;
+    const role = req.body.role || "customer"; // default to 'user' if not provided
 
     if (!firstname || !lastname || !mobile || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
@@ -36,13 +37,13 @@ exports.signup = async (req, res) => {
       email,
       mobile,
       hashedPassword,
-      "user"
+      role
     );
 
     res.status(201).json({
       message: "User registered successfully",
       userId,
-      role: "user",
+      role,
     });
   } catch (err) {
     console.error("Signup error:", err);

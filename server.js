@@ -45,8 +45,9 @@ app.use("/api/ordered", OrderedProducts);
 
 // Start server
 const PORT = process.env.PORT || 5001;
+const HOST = process.env.HOST || "localhost"; // listen on all interfaces
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://${HOST}:${PORT}`);
 });
 
 
