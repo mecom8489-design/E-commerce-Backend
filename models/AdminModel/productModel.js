@@ -46,12 +46,13 @@ const Product = {
       category,
       stock,
       image,
+      offer
     } = data;
     const [result] = await pool.execute(
       `UPDATE products 
-       SET name = ?, price = ?, rating = ?, discount = ?, description = ?, category = ?, stock = ?, image = ?
+       SET name = ?, price = ?, rating = ?, discount = ?, description = ?, category = ?, stock = ?, image = ?, offer = ?
        WHERE id = ?`,
-      [name, price, rating, discount, description, category, stock, image, id]
+      [name, price, rating, discount, description, category, stock, image, offer, id]
     );
     return result;
   },

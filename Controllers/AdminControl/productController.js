@@ -55,7 +55,7 @@ exports.getProductById = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, rating, discount, description, category, stock } = req.body;
+    const { name, price, rating, discount, description, category, stock, offer } = req.body;
     const newImage = req.file ? req.file.path : null;
 
     const existingProduct = await Product.getById(id);
@@ -65,7 +65,7 @@ exports.updateProduct = async (req, res) => {
     if (newImage && existingProduct.image) fs.unlink(existingProduct.image, () => {});
 
     const image = newImage || existingProduct.image;
-    await Product.update(id, { name, price, rating, discount, description, category, stock, image });
+    await Product.update(id, { name, price, rating, discount, description, category, stock, image, offer });
 
     return res.status(200).json({ message: 'Product updated successfully', image });
   } catch (error) {
