@@ -3,7 +3,15 @@ const fs = require('fs');
 
 const getFullImageUrl = (req, imagePath) => {
   if (!imagePath) return null;
-  if (typeof imagePath !== 'string') imagePath = String(imagePath);
+
+  imagePath = imagePath.trim().replace(/^\/+/, "");
+
+  // If Cloudinary or any full URL
+  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+    return imagePath;
+  }
+
+  // Local uploads
   return `${req.protocol}://${req.get('host')}/${imagePath.replace(/\\/g, '/')}`;
 };
 
