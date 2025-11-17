@@ -13,8 +13,8 @@ exports.getAllOrders = async (req, res) => {
 // 📦 Create new order
 exports.createOrder = async (req, res) => {
     try {
-        const { product_name, product_description, image } = req.body;
-
+        const { product_name, product_description } = req.body;
+        const image = req.file ? req.file.path : null;
         if (!product_name || !product_description || !image) {
             return res.status(400).json({ message: "All fields are required" });
         }
@@ -27,7 +27,7 @@ exports.createOrder = async (req, res) => {
 
         return res.status(201).json({
             message: "Order added successfully",
-            id: result.insertId,
+            id: result.insertId,image
         });
 
     } catch (error) {
