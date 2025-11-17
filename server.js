@@ -14,7 +14,7 @@ const ordersRoutes= require("./routes/AdminRoutes/ordersRoutes");
 const contactusRoutes= require("./routes/userRoutes/contactusRoutes");
 const supportRoutes= require("./routes/AdminRoutes/supportRoutes");
 const OrderedProducts = require("./Ordered-Products/route");
-
+const ExclusivelyAvailable = require("./Exclusively-Available/route")
 const app = express();
 
 // Middleware
@@ -34,7 +34,7 @@ app.use("/api/admin", adminstatus);
 app.use("/api/admin", productRoutes);
 app.use("/api/admin", ordersRoutes);
 app.use("/api/admin", supportRoutes);
-
+app.use("/api/admin", ExclusivelyAvailable);
 
 
 //Rotes user
