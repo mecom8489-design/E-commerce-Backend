@@ -3,7 +3,13 @@ const fs = require('fs');
 
 const getFullImageUrl = (req, imagePath) => {
   if (!imagePath) return null;
-  if (typeof imagePath !== 'string') imagePath = String(imagePath);
+
+  // If image already has Cloudinary URL → return as-is
+  if (imagePath.startsWith("http")) {
+    return imagePath;
+  }
+
+  // Local images
   return `${req.protocol}://${req.get('host')}/${imagePath.replace(/\\/g, '/')}`;
 };
 
@@ -24,11 +30,7 @@ exports.createProduct = async (req, res) => {
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.getAll();
-    const productsWithUrl = products.map(p => ({
-      ...p,
-      image: getFullImageUrl(req, p.image),
-    }));
-    
+    const productsWithUrl = products.map(p => ({ ...p, image: getFullImageUrl(req, p.image) }));
     return res.status(200).json(productsWithUrl);
   } catch (error) {
     console.error(error);
