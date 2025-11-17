@@ -18,10 +18,10 @@ const getFullImageUrl = (req, imagePath) => {
 
 exports.createProduct = async (req, res) => {
   try {
-    const { name, price, rating, discount, description, category, stock } = req.body;
+    const { name, price, rating, discount, description, category, stock, offer } = req.body;
     const image = req.file ? req.file.path : null;
 
-    const result = await Product.create({ name, price, rating, discount, description, category, stock, image });
+    const result = await Product.create({ name, price, rating, discount, description, category, stock, image, offer });
     return res.status(201).json({ message: 'Product created', productId: result.insertId, image });
   } catch (error) {
     console.error(error);
