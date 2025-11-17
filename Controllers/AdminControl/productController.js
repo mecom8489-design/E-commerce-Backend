@@ -24,7 +24,11 @@ exports.createProduct = async (req, res) => {
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.getAll();
-    const productsWithUrl = products.map(p => ({ ...p, image: getFullImageUrl(req, p.image) }));
+    const productsWithUrl = products.map(p => ({
+      ...p,
+      image: getFullImageUrl(req, p.image),
+    }));
+    
     return res.status(200).json(productsWithUrl);
   } catch (error) {
     console.error(error);
