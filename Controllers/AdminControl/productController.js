@@ -1,17 +1,18 @@
 const Product = require('../../models/AdminModel/productModel');
 const fs = require('fs');
+
 const getFullImageUrl = (req, imagePath) => {
   if (!imagePath) return null;
 
-  // Clean accidental leading slash (e.g. "/https://...")
-  imagePath = imagePath.replace(/^\/+/, "");
+  // Trim accidental leading slash (/https:// → https://)
+  imagePath = imagePath.trim().replace(/^\/+/, "");
 
-  // If Cloudinary or any remote URL → return as-is
-  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+  // If it starts with http or https → Cloudinary URL → return as-is
+  if (/^https?:\/\//i.test(imagePath)) {
     return imagePath;
   }
 
-  // Local images
+  // Otherwise it's a local image → add server URL
   return `${req.protocol}://${req.get('host')}/${imagePath.replace(/\\/g, '/')}`;
 };
 
