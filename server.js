@@ -55,3 +55,11 @@ app.listen(PORT, "0.0.0.0", () => {
 });
 
 
+
+
+// const PORT = 3000;
+
+// app.listen(PORT, "localhost", () => {
+//   console.log("🚀 Server ready");
+//   console.log(`Public URL → http://localhost:${PORT}`);
+// });
