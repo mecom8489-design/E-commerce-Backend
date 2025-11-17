@@ -3,19 +3,9 @@ const fs = require('fs');
 
 const getFullImageUrl = (req, imagePath) => {
   if (!imagePath) return null;
-
-  // Trim accidental leading slash (/https:// → https://)
-  imagePath = imagePath.trim().replace(/^\/+/, "");
-
-  // If it starts with http or https → Cloudinary URL → return as-is
-  if (/^https?:\/\//i.test(imagePath)) {
-    return imagePath;
-  }
-
-  // Otherwise it's a local image → add server URL
+  if (typeof imagePath !== 'string') imagePath = String(imagePath);
   return `${req.protocol}://${req.get('host')}/${imagePath.replace(/\\/g, '/')}`;
 };
-
 
 
 exports.createProduct = async (req, res) => {
