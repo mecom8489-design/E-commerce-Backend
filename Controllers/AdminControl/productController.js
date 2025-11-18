@@ -33,26 +33,25 @@ exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.getAllWithOrderCount();
 
-    // Prepare groups
     const productAd = [];
-    const viewMore = [];
     const bestSeller = [];
+    const viewMore = [];
 
     products.forEach(p => {
       p.image = getFullImageUrl(req, p.image);
 
-      // product AD → has offer
-      if (p.offer !== null && p.offer !== "") {
+      const offerText = p.offer ? p.offer.toLowerCase() : "";
+      const offerList = offerText.split(",").map(v => v.trim());
+
+      if (offerList.includes("productad")) {
         productAd.push(p);
       }
 
-      // best seller → order_count > 2
-      if (p.order_count > 2) {
+      if (offerList.includes("bestseller")) {
         bestSeller.push(p);
       }
 
-      // view more → no offer
-      if (p.offer === null || p.offer === "") {
+      if (!offerText) {
         viewMore.push(p);
       }
     });
@@ -60,8 +59,8 @@ exports.getAllProducts = async (req, res) => {
     return res.status(200).json({
       data: {
         productAd,
-        viewMore,
-        bestSeller
+        bestSeller,
+        viewMore
       }
     });
 
