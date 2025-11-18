@@ -8,6 +8,89 @@ const getFullImageUrl = (req, imagePath) => {
   };
 // Configure your email transport
 
+// exports.createOrder = async (req, res) => {
+//   try {
+//     const {
+//       user_id,
+//       product_id,
+//       quantity,
+//       price_per_unit,
+//       total_price,
+//       shipping_name,
+//       shipping_phone,
+//       shipping_address,
+//       payment_method,
+//       payment_status,
+//       order_status,
+//       user_email, // 👈 make sure frontend sends user email
+//       productname,
+//     } = req.body;
+
+//     if (
+//       !user_id ||
+//       !product_id ||
+//       !shipping_name ||
+//       !shipping_phone ||
+//       !shipping_address
+//     ) {
+//       return res.status(400).json({ message: "Missing required fields" });
+//     }
+
+//     const orderData = {
+//       user_id,
+//       product_id,
+//       quantity,
+//       price_per_unit,
+//       total_price,
+//       shipping_name,
+//       shipping_phone,
+//       shipping_address,
+//       payment_method,
+//       payment_status,
+//       order_status,
+//     };
+
+//     const result = await Order.create(orderData);
+//     console.log(result)
+
+//     // ✅ Send confirmation email
+//     const transporter = nodemailer.createTransport({
+//       service: "gmail",
+//       auth: {
+//         user: "mecom8489@gmail.com", // replace with your Gmail
+//         pass: "yvmo vjoo pqee utbg", // ⚠️ use App Password, not normal password
+//       },
+//     });
+
+//     const mailOptions = {
+//       from: '"Your Shop Name" <yourgmail@gmail.com>',
+//       to: user_email, // user email from frontend
+//       subject: "Order Confirmation - Thank you for your purchase!",
+//       html: `
+//           <h2>Hi ${shipping_name},</h2>
+//           <p>Thank you for your order!</p>
+//           <p><strong>Product:</strong> ${productname}</p>
+//           <p><strong>Total Price:</strong> ₹${total_price}</p>
+//           <p><strong>Shipping Address:</strong> ${shipping_address}</p>
+//           <p>We’ll notify you once your order has been shipped.</p>
+//           <br/>
+//           <p>Best regards,<br><strong>Your Shop Name</strong></p>
+//         `,
+//     };
+
+//     await transporter.sendMail(mailOptions);
+
+//     return res.status(201).json({
+//       message: "Order placed successfully & email sent",
+//       order_id: result.insertId,
+//     });
+//   } catch (error) {
+//     console.error("Error creating order:", error);
+//     return res.status(500).json({ message: "Internal server error" ,error });
+//   }
+// };
+
+
 exports.createOrder = async (req, res) => {
   try {
     const {
@@ -22,7 +105,7 @@ exports.createOrder = async (req, res) => {
       payment_method,
       payment_status,
       order_status,
-      user_email, // 👈 make sure frontend sends user email
+      user_email,
       productname,
     } = req.body;
 
@@ -36,6 +119,7 @@ exports.createOrder = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    // store order in DB
     const orderData = {
       user_id,
       product_id,
@@ -51,44 +135,52 @@ exports.createOrder = async (req, res) => {
     };
 
     const result = await Order.create(orderData);
-    console.log(result)
+    console.log(result);
 
-    // ✅ Send confirmation email
+    // 🔥 Use Brevo SMTP instead of Gmail SMTP
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp-relay.brevo.com",
+      port: 587,
+      secure: false,
       auth: {
-        user: "mecom8489@gmail.com", // replace with your Gmail
-        pass: "yvmo vjoo pqee utbg", // ⚠️ use App Password, not normal password
+        user: "mecom8489@gmail.com",
+        pass: "yvmo vjoo pqee utbg",
       },
     });
 
     const mailOptions = {
-      from: '"Your Shop Name" <yourgmail@gmail.com>',
-      to: user_email, // user email from frontend
-      subject: "Order Confirmation - Thank you for your purchase!",
+      from: '"Your Shop" <your-brevo-login-email@example.com>',
+      to: user_email,
+      subject: "Order Confirmed! 🎉",
       html: `
-          <h2>Hi ${shipping_name},</h2>
-          <p>Thank you for your order!</p>
-          <p><strong>Product:</strong> ${productname}</p>
-          <p><strong>Total Price:</strong> ₹${total_price}</p>
-          <p><strong>Shipping Address:</strong> ${shipping_address}</p>
-          <p>We’ll notify you once your order has been shipped.</p>
-          <br/>
-          <p>Best regards,<br><strong>Your Shop Name</strong></p>
-        `,
+        <h2>Hello ${shipping_name},</h2>
+        <p>Thank you for your order!</p>
+        <p><strong>Product:</strong> ${productname}</p>
+        <p><strong>Total Price:</strong> ₹${total_price}</p>
+        <p><strong>Shipping Address:</strong> ${shipping_address}</p>
+        <p>We'll notify you when your order ships 🚚</p>
+        <br/>
+        <p>Regards,<br><strong>Your Shop</strong></p>
+      `,
     };
 
     await transporter.sendMail(mailOptions);
 
     return res.status(201).json({
-      message: "Order placed successfully & email sent",
+      message: "Order placed & email sent successfully",
       order_id: result.insertId,
     });
+
   } catch (error) {
     console.error("Error creating order:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ 
+      message: "Internal server error",
+      error 
+    });
   }
 };
+
+
 
 // 📦 Get all orders
 exports.getAllOrders = async (req, res) => {
