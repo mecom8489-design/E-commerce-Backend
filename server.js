@@ -45,22 +45,22 @@ app.use("/api/search",search)
 
 
 // Start server
-// const PORT = process.env.PORT || 5001;
-// const DOMAIN ="e-commerce-backend-production-6fa0.up.railway.app";
+const PORT = process.env.PORT || 5001;
+const DOMAIN ="e-commerce-backend-production-6fa0.up.railway.app";
 
-// app.listen(PORT, "0.0.0.0", () => {
-//   console.log("🚀 Server ready");
-//   if (DOMAIN) {
-//     console.log(`Public URL → https://${DOMAIN}`);
-//   }
-// });
-
-
-
-
- const PORT = 3000;
-
-app.listen(PORT, "localhost", () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log("🚀 Server ready");
-  console.log(`Public URL → http://localhost:${PORT}`);
+  if (DOMAIN) {
+    console.log(`Public URL → https://${DOMAIN}`);
+  }
 });
+
+
+
+
+//  const PORT = 3000;
+
+// app.listen(PORT, "localhost", () => {
+//   console.log("🚀 Server ready");
+//   console.log(`Public URL → http://localhost:${PORT}`);
+// });
