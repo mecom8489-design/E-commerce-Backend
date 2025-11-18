@@ -51,6 +51,7 @@ exports.createOrder = async (req, res) => {
     };
 
     const result = await Order.create(orderData);
+    console.log(result)
 
     // ✅ Send confirmation email
     const transporter = nodemailer.createTransport({
