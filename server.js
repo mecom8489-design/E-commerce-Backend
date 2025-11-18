@@ -41,7 +41,7 @@ app.use("/api/admin", ExclusivelyAvailable);
 //Rotes user
 app.use("/api/user", contactusRoutes);
 app.use("/api/ordered", OrderedProducts);
-app.use("api/search",search)
+app.use("/api/search",search)
 
 
 // Start server
