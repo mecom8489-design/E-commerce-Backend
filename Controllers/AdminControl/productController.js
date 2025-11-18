@@ -31,14 +31,46 @@ exports.createProduct = async (req, res) => {
 
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.getAll();
-    const productsWithUrl = products.map(p => ({ ...p, image: getFullImageUrl(req, p.image) }));
-    return res.status(200).json(productsWithUrl);
+    const products = await Product.getAllWithOrderCount();
+
+    // Prepare groups
+    const productAd = [];
+    const viewMore = [];
+    const bestSeller = [];
+
+    products.forEach(p => {
+      p.image = getFullImageUrl(req, p.image);
+
+      // product AD → has offer
+      if (p.offer !== null && p.offer !== "") {
+        productAd.push(p);
+      }
+
+      // best seller → order_count > 2
+      if (p.order_count > 2) {
+        bestSeller.push(p);
+      }
+
+      // view more → no offer
+      if (p.offer === null || p.offer === "") {
+        viewMore.push(p);
+      }
+    });
+
+    return res.status(200).json({
+      data: {
+        productAd,
+        viewMore,
+        bestSeller
+      }
+    });
+
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    console.error("Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 exports.getProductById = async (req, res) => {
   try {

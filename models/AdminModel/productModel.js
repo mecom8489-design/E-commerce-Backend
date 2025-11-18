@@ -29,6 +29,22 @@ const Product = {
     return rows;
   },
 
+  async getAllWithOrderCount() {
+    const [rows] = await pool.execute(`
+      SELECT 
+        p.*,
+        p.price * (1 - (p.discount / 100)) AS finalPrice,
+        (
+          SELECT COUNT(*) 
+          FROM orders o 
+          WHERE o.product_id = p.id
+        ) AS order_count
+      FROM products p
+    `);
+  
+    return rows;
+  },
+  
   async getById(id) {
     const [rows] = await pool.execute("SELECT * FROM products WHERE id = ?", [
       id,
