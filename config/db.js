@@ -2,8 +2,8 @@ const mysql = require("mysql2/promise");
 require("dotenv").config();
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
+  host: process.env.DB_HOST || "sql.freedb.tech",
+  user: process.env.DB_USER || "freedb_backend",
   password:"V83?fnWQVy#@QcV",
   database: process.env.DB_NAME || "ecommerce_backend",
   port: process.env.DB_PORT || 3306,

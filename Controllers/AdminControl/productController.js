@@ -51,6 +51,10 @@ exports.getAllProducts = async (req, res) => {
         bestSeller.push(p);
       }
 
+      if (offerList.includes("Recommend")) {
+        Recommend.push(p);
+      }
+
       if (!offerText) {
         viewMore.push(p);
       }
