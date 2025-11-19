@@ -22,7 +22,7 @@ exports.createProduct = async (req, res) => {
     const image = req.file ? req.file.path : null;
 
     const result = await Product.create({ name, price, rating, discount, description, category, stock, image, offer });
-    return res.status(201).json({ message: 'Product created', productId: result.insertId, image });
+    return res.status(201).json({ message: 'Product created', productId: result.insertId, image, offer });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
