@@ -2,10 +2,18 @@ const Order = require("./Model");
 const nodemailer = require("nodemailer");
 
 const getFullImageUrl = (req, imagePath) => {
-    if (!imagePath) return null;
-    if (typeof imagePath !== 'string') imagePath = String(imagePath);
-    return `${req.protocol}://${req.get('host')}/${imagePath.replace(/\\/g, '/')}`;
-  };
+  if (!imagePath) return null;
+
+  imagePath = imagePath.trim().replace(/^\/+/, "");
+
+  // If Cloudinary or any full URL
+  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+    return imagePath;
+  }
+
+  // Local uploads
+  return `${req.protocol}://${req.get('host')}/${imagePath.replace(/\\/g, '/')}`;
+};
 // Configure your email transport
 
 exports.createOrder = async (req, res) => {
