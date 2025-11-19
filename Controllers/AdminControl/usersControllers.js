@@ -36,6 +36,8 @@ exports.deleteUsers = async (req, res) => {
 
 
 exports.updateUsers = async (req, res) => {
+  console.log(req)
+  console.log(res)
   try {
     const { id } = req.params;
     const data = req.body;
@@ -54,6 +56,6 @@ exports.updateUsers = async (req, res) => {
     return res.status(200).json({ message: "User updated successfully." });
   } catch (error) {
     console.error("Error updating user:", error);
-    return res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ message: "Internal server error.",error });
   }
 };

@@ -64,6 +64,7 @@ exports.getAllProducts = async (req, res) => {
       data: {
         productAd,
         bestSeller,
+        Recommend,
         viewMore
       }
     });
