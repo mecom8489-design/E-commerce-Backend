@@ -35,6 +35,7 @@ exports.getAllProducts = async (req, res) => {
 
     const productAd = [];
     const bestSeller = [];
+    const Recommend = [];
     const viewMore = [];
 
     products.forEach(p => {
