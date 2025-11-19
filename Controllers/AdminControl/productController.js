@@ -35,7 +35,7 @@ exports.getAllProducts = async (req, res) => {
 
     const productAd = [];
     const bestSeller = [];
-    const Recommend = [];
+    const recommended = [];
     const viewMore = [];
 
     products.forEach(p => {
@@ -52,8 +52,8 @@ exports.getAllProducts = async (req, res) => {
         bestSeller.push(p);
       }
 
-      if (offerList.includes("Recommend")) {
-        Recommend.push(p);
+      if (offerList.includes("recommended")) {
+        recommended.push(p);
       }
 
       if (!offerText) {
@@ -65,7 +65,7 @@ exports.getAllProducts = async (req, res) => {
       data: {
         productAd,
         bestSeller,
-        Recommend,
+        recommended,
         viewMore
       }
     });
