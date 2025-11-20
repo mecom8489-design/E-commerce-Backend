@@ -4,10 +4,18 @@ const db = require("../config/db"); // ✅ Correct path
 
 const getFullImageUrl = (req, imagePath) => {
   if (!imagePath) return null;
-  if (typeof imagePath !== "string") imagePath = String(imagePath);
-  return `${req.protocol}://${req.get("host")}/${imagePath.replace(/\\/g, "/")}`;
+ 
+  imagePath = imagePath.trim().replace(/^\/+/, "");
+ 
+  // If Cloudinary or any full URL
+  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+    return imagePath;
+  }
+ 
+  // Local uploads
+  return `${req.protocol}://${req.get('host')}/${imagePath.replace(/\\/g, '/')}`;
 };
-
+ 
 // -----------------------------------------------------
 // ✅ CREATE ORDER (+ stock reduce)
 // -----------------------------------------------------
