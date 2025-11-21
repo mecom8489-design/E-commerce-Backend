@@ -45,8 +45,6 @@ const Order = {
         o.payment_method,
         o.payment_status,
         o.order_status,
-        o.Reason,
-        o.cancelled,
         o.created_at,
         o.updated_at,
         p.name AS product_name,
@@ -64,9 +62,6 @@ const Order = {
     return rows;
   },
 
-
-
-
   // Get order by ID
   getById: async (user_id) => {
     const [rows] = await db.query(
@@ -83,6 +78,8 @@ const Order = {
           o.payment_method,
           o.payment_status,
           o.order_status,
+           o.Reason,
+        o.cancelled,
           o.created_at,
           o.updated_at,
           p.name AS product_name,
@@ -99,10 +96,9 @@ const Order = {
        ORDER BY o.order_id DESC`,
       [user_id]
     );
-  
+
     return rows; // return all matched orders with product details
   },
-  
 };
 
 module.exports = Order;
