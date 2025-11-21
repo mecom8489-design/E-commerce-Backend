@@ -11,12 +11,13 @@ const Product = {
       category,
       stock,
       image,
-      offer
+      offer,
+      thersold
     } = data;
     const [result] = await pool.execute(
-      `INSERT INTO products (name, price, rating, discount, description, category, stock, image, offer) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [name, price, rating, discount, description, category, stock, image, offer]
+      `INSERT INTO products (name, price, rating, discount, description, category, stock, image, offer, thersold) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [name, price, rating, discount, description, category, stock, image, offer, thersold]
     );
     return result;
   },

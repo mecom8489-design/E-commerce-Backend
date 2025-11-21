@@ -4,18 +4,18 @@ const db = require("../config/db"); // ✅ Correct path
 
 const getFullImageUrl = (req, imagePath) => {
   if (!imagePath) return null;
- 
+
   imagePath = imagePath.trim().replace(/^\/+/, "");
- 
+
   // If Cloudinary or any full URL
   if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
     return imagePath;
   }
- 
+
   // Local uploads
   return `${req.protocol}://${req.get('host')}/${imagePath.replace(/\\/g, '/')}`;
 };
- 
+
 // -----------------------------------------------------
 // ✅ CREATE ORDER (+ stock reduce)
 // -----------------------------------------------------
@@ -147,6 +147,8 @@ exports.cancelOrder = async (req, res) => {
   try {
     const { order_id } = req.params;
 
+    const { reason } = req.body;
+
     // Get order
     const [[order]] = await db.query(
       "SELECT product_id, quantity, cancelled FROM orders WHERE order_id = ?",
@@ -161,8 +163,8 @@ exports.cancelOrder = async (req, res) => {
 
     // Mark as cancelled
     await db.query(
-      "UPDATE orders SET cancelled = 1 WHERE order_id = ?",
-      [order_id]
+      "UPDATE orders SET cancelled = 1, reason = ? WHERE order_id = ?",
+      [reason, order_id]
     );
 
     // ⭐ Restore stock

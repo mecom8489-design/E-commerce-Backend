@@ -18,11 +18,11 @@ const getFullImageUrl = (req, imagePath) => {
 
 exports.createProduct = async (req, res) => {
   try {
-    const { name, price, rating, discount, description, category, stock, offer } = req.body;
+    const { name, price, rating, discount, description, category, stock, offer, thersold } = req.body;
     const image = req.file ? req.file.path : null;
 
-    const result = await Product.create({ name, price, rating, discount, description, category, stock, image, offer });
-    return res.status(201).json({ message: 'Product created', productId: result.insertId, image, offer });
+    const result = await Product.create({ name, price, rating, discount, description, category, stock, image, offer, thersold });
+    return res.status(201).json({ message: 'Product created', productId: result.insertId, image, offer, thersold });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Internal server error' });
