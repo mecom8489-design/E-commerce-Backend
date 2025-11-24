@@ -31,19 +31,26 @@ exports.createReview = async (req, res) => {
 
 
 
-exports.getAllReviews = async (req, res) => {
+exports.getReviewsByProductId = async (req, res) => {
   try {
+    const product_id = req.params.product_id;
+
+    if (!product_id) {
+      return res.status(400).json({ message: "Product ID is required" });
+    }
+
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 25;
     const offset = (page - 1) * limit;
 
-    const results = await Review.getReviewsByProduct(offset, limit);
+    const results = await Review.getReviewsByProduct(product_id, offset, limit);
 
     res.status(200).json({
+      product_id,
       page,
       limit,
       count: results.length,
-      reviews: results
+      reviews: results,
     });
 
   } catch (err) {
