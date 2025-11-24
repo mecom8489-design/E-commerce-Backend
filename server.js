@@ -16,6 +16,7 @@ const supportRoutes= require("./routes/AdminRoutes/supportRoutes");
 const OrderedProducts = require("./Ordered-Products/route");
 const ExclusivelyAvailable = require("./Exclusively-Available/route")
 const search = require("./Search/route")
+const review = require("./review/routes")
 const app = express();
 
 // Middleware
@@ -42,6 +43,7 @@ app.use("/api/admin", ExclusivelyAvailable);
 app.use("/api/user", contactusRoutes);
 app.use("/api/ordered", OrderedProducts);
 app.use("/api/search",search)
+app.use("/api/review",review)
 
 
 // Start server
