@@ -45,6 +45,19 @@ exports.getReviewsByProductId = async (req, res) => {
 
     const results = await Review.getReviewsByProduct(product_id, offset, limit);
 
+    // If no reviews found
+    if (!results || results.length === 0) {
+      return res.status(200).json({
+        product_id,
+        page,
+        limit,
+        count: 0,
+        reviews: [],
+        message: "No reviews available"
+      });
+    }
+
+    // If reviews exist
     res.status(200).json({
       product_id,
       page,
