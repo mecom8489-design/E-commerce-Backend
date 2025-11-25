@@ -15,13 +15,13 @@ const Users = {
   },
 
   async update(id, data) {
-  const { firstname, lastname, mobile, role } = data;
+  const { firstname, lastname, mobile, role, address  } = data;
 
   const [result] = await pool.execute(
     `UPDATE users
-     SET firstname = ?, lastname = ?, mobile = ?, role = ?, updated_at = NOW()
+     SET firstname = ?, lastname = ?, mobile = ?, role = ?, address = ?, updated_at = NOW()
      WHERE id = ?`,
-    [firstname, lastname, mobile, role, id]
+    [firstname, lastname, mobile, role, address, id]
   );
 
   return result;
