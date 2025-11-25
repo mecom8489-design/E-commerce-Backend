@@ -15,9 +15,12 @@ function generateToken(user) {
 }
 
 exports.signup = async (req, res) => {
+  console.log("req",req)
+  console.log("res",res)
+
   try {
     const { firstname, lastname, mobile, email, password } = req.body;
-    const role = req.body.role || "customer"; // default to 'user' if not provided
+    const role = req.body.role || "user"; // default to 'user' if not provided
 
     if (!firstname || !lastname || !mobile || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
