@@ -9,6 +9,29 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
+
+exports.getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await Users.getById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error - Get User" });
+  }
+};
+
+
+
+
+
+
+
 exports.deleteUsers = async (req, res) => {
   try {
     const { id } = req.params;

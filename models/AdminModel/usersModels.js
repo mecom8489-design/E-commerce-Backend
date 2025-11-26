@@ -4,7 +4,7 @@ const Users = {
   // Get all categories
   async getAll() {
     const [rows] = await pool.execute(
-      `SELECT id, CONCAT(firstname, ' ', lastname) AS name, email, mobile, role FROM users`
+      `SELECT id, CONCAT(firstname, ' ', lastname) AS name, email, mobile, address, role FROM users`
     );
     return rows;
   },
@@ -25,6 +25,16 @@ const Users = {
   );
 
   return result;
+},
+async getById(id) {
+  const [rows] = await pool.execute(
+    `SELECT id, firstname, lastname, email, mobile, role, address 
+     FROM users 
+     WHERE id = ?`,
+    [id]
+  );
+
+  return rows.length > 0 ? rows[0] : null;
 }
 
 
