@@ -18,11 +18,15 @@ exports.createReview = async (req, res) => {
 
     // Save to DB
     const result = await Review.create(reviewData);
-
     return res.status(201).json({
       message: "Review added successfully",
       review_id: result.insertId,
+      user_id: user_id,
+      product_id: product_id,
+      rating: rating,
+      review_text: review_text
     });
+    
   } catch (error) {
     console.error("Error creating review:", error);
     return res.status(500).json({ message: "Internal server error" });
