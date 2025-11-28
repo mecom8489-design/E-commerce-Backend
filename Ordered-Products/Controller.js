@@ -1,5 +1,5 @@
 const Order = require("./Model");
-const nodemailer = require("nodemailer");
+const brevo = require("@getbrevo/brevo");
 const db = require("../config/db"); // ✅ Correct path
 
 const getFullImageUrl = (req, imagePath) => {
@@ -19,6 +19,13 @@ const getFullImageUrl = (req, imagePath) => {
 // -----------------------------------------------------
 // ✅ CREATE ORDER (+ stock reduce)
 // -----------------------------------------------------
+let apiInstance = new brevo.TransactionalEmailsApi();
+apiInstance.setApiKey(
+  brevo.TransactionalEmailsApiApiKeys.apiKey,
+  process.env.BREVO_API_KEY
+);
+
+
 exports.createOrder = async (req, res) => {
   try {
     const {
@@ -63,45 +70,54 @@ exports.createOrder = async (req, res) => {
       [quantity, product_id]
     );
 
-    // ---------------------------------------------------
-    // EMAIL CODE (your original code untouched)
-    // ---------------------------------------------------
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "mecom8489@gmail.com",
-        pass: "iemp bavu cbhe oskk",
-      },
-    });
+    // ⭐ Send Order Confirmation Email via Resend
+    // const emailResponse = await resend.emails.send({
+    //   from: "Your Shop <onboarding@resend.dev>",
+    //   to: user_email,
+    //   subject: "Order Confirmation - Thank You for Your Purchase!",
+    //   html: `
+    //     <h2>Hi ${shipping_name},</h2>
+    //     <p>Thank you for your order!</p>
 
-    const mailOptions = {
-      from: '"Your Shop Name" <yourgmail@gmail.com>',
-      to: user_email,
-      subject: "Order Confirmation - Thank you for your purchase!",
-      html: `
+    //     <p><strong>Product:</strong> ${productname}</p>
+    //     <p><strong>Total Price:</strong> ₹${total_price}</p>
+    //     <p><strong>Quantity:</strong> ${quantity}</p>
+
+    //     <h3>Shipping Details:</h3>
+    //     <p><strong>Name:</strong> ${shipping_name}</p>
+    //     <p><strong>Phone:</strong> ${shipping_phone}</p>
+    //     <p><strong>Address:</strong> ${shipping_address}</p>
+
+    //     <p>We’ll notify you once your order has been shipped.</p>
+    //     <br/>
+    //     <p>Best Regards,<br><strong>Your Shop</strong></p>
+    //   `
+    // });
+    const emailResponse = await apiInstance.sendTransacEmail({
+      sender: { name: "Your Shop", email: "yourshop@gmail.com" },
+      to: [{ email: user_email }],
+      subject: "Order Confirmation",
+      htmlContent: `
         <h2>Hi ${shipping_name},</h2>
-        <p>Thank you for your order!</p>
-        <p><strong>Product:</strong> ${productname}</p>
-        <p><strong>Total Price:</strong> ₹${total_price}</p>
-        <p><strong>Shipping Address:</strong> ${shipping_address}</p>
-        <p>We’ll notify you once your order has been shipped.</p>
-        <br/>
-        <p>Best regards,<br><strong>Your Shop Name</strong></p>
-      `,
-    };
-
-    await transporter.sendMail(mailOptions);
+        <p>Thank you for your order.</p>
+        <p>Product: ${productname}</p>
+        <p>Total Price: ₹${total_price}</p>
+      `
+    });
 
     return res.status(201).json({
       message: "Order placed successfully & email sent",
       order_id: result.insertId,
+      emailInfo: emailResponse
     });
+
 
   } catch (error) {
     console.error("Error creating order:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
+
 
 // -----------------------------------------------------
 // 📦 Get all orders
@@ -140,9 +156,7 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
-// -----------------------------------------------------
-// ❌ CANCEL ORDER (+ stock restore)
-// -----------------------------------------------------
+
 exports.cancelOrder = async (req, res) => {
   try {
     const { order_id } = req.params;
