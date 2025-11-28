@@ -22,7 +22,7 @@ const getFullImageUrl = (req, imagePath) => {
 let apiInstance = new brevo.TransactionalEmailsApi();
 apiInstance.setApiKey(
   brevo.TransactionalEmailsApiApiKeys.apiKey,
-  process.env.BREVO_API_KEY
+"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"
 );
 
 
