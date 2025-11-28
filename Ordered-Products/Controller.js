@@ -70,9 +70,6 @@ exports.createOrder = async (req, res) => {
       [quantity, product_id]
     );
 
-<<<<<<< HEAD
-   
-=======
     // ⭐ Send Order Confirmation Email via Resend
     // const emailResponse = await resend.emails.send({
     //   from: "Your Shop <onboarding@resend.dev>",
@@ -107,7 +104,6 @@ exports.createOrder = async (req, res) => {
         <p>Total Price: ₹${total_price}</p>
       `
     });
->>>>>>> 3d57cacedea8d3940c0cdcfbfaaa015dddc409d6
 
     return res.status(201).json({
       message: "Order placed successfully & email sent",
