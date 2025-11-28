@@ -22,7 +22,7 @@ const getFullImageUrl = (req, imagePath) => {
 let apiInstance = new brevo.TransactionalEmailsApi();
 apiInstance.setApiKey(
   brevo.TransactionalEmailsApiApiKeys.apiKey,
-  "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"
+  process.env.BREVO_API_KEY
 );
 
 
@@ -78,16 +78,16 @@ exports.createOrder = async (req, res) => {
     //   html: `
     //     <h2>Hi ${shipping_name},</h2>
     //     <p>Thank you for your order!</p>
-
+    // 
     //     <p><strong>Product:</strong> ${productname}</p>
     //     <p><strong>Total Price:</strong> ₹${total_price}</p>
     //     <p><strong>Quantity:</strong> ${quantity}</p>
-
+    // 
     //     <h3>Shipping Details:</h3>
     //     <p><strong>Name:</strong> ${shipping_name}</p>
     //     <p><strong>Phone:</strong> ${shipping_phone}</p>
     //     <p><strong>Address:</strong> ${shipping_address}</p>
-
+    // 
     //     <p>We’ll notify you once your order has been shipped.</p>
     //     <br/>
     //     <p>Best Regards,<br><strong>Your Shop</strong></p>
