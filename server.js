@@ -10,9 +10,9 @@ const categoryRoutes = require("./routes/AdminRoutes/categoryRoutes");
 const userRoutes = require("./routes/AdminRoutes/usersRoutes");
 const adminstatus = require("./routes/AdminRoutes/mainDashboardRoutes");
 const productRoutes = require("./routes/AdminRoutes/productRoutes");
-const ordersRoutes= require("./routes/AdminRoutes/ordersRoutes");
-const contactusRoutes= require("./routes/userRoutes/contactusRoutes");
-const supportRoutes= require("./routes/AdminRoutes/supportRoutes");
+const ordersRoutes = require("./routes/AdminRoutes/ordersRoutes");
+const contactusRoutes = require("./routes/userRoutes/contactusRoutes");
+const supportRoutes = require("./routes/AdminRoutes/supportRoutes");
 const OrderedProducts = require("./Ordered-Products/route");
 const ExclusivelyAvailable = require("./Exclusively-Available/route")
 const search = require("./Search/route")
@@ -42,13 +42,13 @@ app.use("/api/admin", ExclusivelyAvailable);
 //Rotes user
 app.use("/api/user", contactusRoutes);
 app.use("/api/ordered", OrderedProducts);
-app.use("/api/search",search)
-app.use("/api/review",review)
+app.use("/api/search", search)
+app.use("/api/review", review)
 
 
 // Start server
 const PORT = process.env.PORT || 5001;
-const DOMAIN ="e-commerce-backend-production-6fa0.up.railway.app";
+const DOMAIN = "e-commerce-backend-production-6fa0.up.railway.app";
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log("🚀 Server ready");
