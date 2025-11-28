@@ -12,8 +12,8 @@ exports.createContactus = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: "mecom8489@gmail.com",
+        pass:" yvmo vjoo pqee utbg",
       },
     });
 
