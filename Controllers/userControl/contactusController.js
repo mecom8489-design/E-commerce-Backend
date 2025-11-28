@@ -13,7 +13,7 @@ exports.createContactus = async (req, res) => {
       service: "gmail",
       auth: {
         user: "mecom8489@gmail.com",       // your email
-        pass: "yvmo vjoo pqee utbg"          // Gmail App Password
+        pass: "ewtn eggj gixq rdut"          // Gmail App Password
       }
     });
 
