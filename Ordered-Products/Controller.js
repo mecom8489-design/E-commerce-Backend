@@ -1,5 +1,5 @@
 const Order = require("./Model");
-const brevo = require("@getbrevo/brevo");
+
 const db = require("../config/db"); // ✅ Correct path
 
 const getFullImageUrl = (req, imagePath) => {
@@ -19,11 +19,6 @@ const getFullImageUrl = (req, imagePath) => {
 // -----------------------------------------------------
 // ✅ CREATE ORDER (+ stock reduce)
 // -----------------------------------------------------
-let apiInstance = new brevo.TransactionalEmailsApi();
-apiInstance.setApiKey(
-  brevo.TransactionalEmailsApiApiKeys.apiKey,
-"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"
-);
 
 
 exports.createOrder = async (req, res) => {
@@ -93,22 +88,11 @@ exports.createOrder = async (req, res) => {
     //     <p>Best Regards,<br><strong>Your Shop</strong></p>
     //   `
     // });
-    const emailResponse = await apiInstance.sendTransacEmail({
-      sender: { name: "Your Shop", email: "mecom8489@gmail.com" },
-      to: [{ email: user_email }],
-      subject: "Order Confirmation",
-      htmlContent: `
-        <h2>Hi ${shipping_name},</h2>
-        <p>Thank you for your order.</p>
-        <p>Product: ${productname}</p>
-        <p>Total Price: ₹${total_price}</p>
-      `
-    });
-
+    
     return res.status(201).json({
       message: "Order placed successfully & email sent",
       order_id: result.insertId,
-      emailInfo: emailResponse
+   
     });
 
 
