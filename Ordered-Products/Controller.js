@@ -63,34 +63,7 @@ exports.createOrder = async (req, res) => {
       [quantity, product_id]
     );
 
-    // ---------------------------------------------------
-    // EMAIL CODE (your original code untouched)
-    // ---------------------------------------------------
-    // const transporter = nodemailer.createTransport({
-    //   service: "gmail",
-    //   auth: {
-    //     user: "mecom8489@gmail.com",
-    //     pass: "yvmo vjoo pqee utbg",
-    //   },
-    // });
-
-    // const mailOptions = {
-    //   from: '"Your Shop Name" <yourgmail@gmail.com>',
-    //   to: user_email,
-    //   subject: "Order Confirmation - Thank you for your purchase!",
-    //   html: `
-    //     <h2>Hi ${shipping_name},</h2>
-    //     <p>Thank you for your order!</p>
-    //     <p><strong>Product:</strong> ${productname}</p>
-    //     <p><strong>Total Price:</strong> ₹${total_price}</p>
-    //     <p><strong>Shipping Address:</strong> ${shipping_address}</p>
-    //     <p>We’ll notify you once your order has been shipped.</p>
-    //     <br/>
-    //     <p>Best regards,<br><strong>Your Shop Name</strong></p>
-    //   `,
-    // };
-
-    // await transporter.sendMail(mailOptions);
+   
 
     return res.status(201).json({
       message: "Order placed successfully & email sent",
