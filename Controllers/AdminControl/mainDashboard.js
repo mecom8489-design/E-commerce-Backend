@@ -15,6 +15,7 @@ exports.getUserStatus = async (req, res) => {
 };
 
 exports.getrecentOrders = async (req, res) => {
+  console.log(res)
   try {
     const recentOrders = await Status.getRecentOrders();
     return res.status(200).json(recentOrders);

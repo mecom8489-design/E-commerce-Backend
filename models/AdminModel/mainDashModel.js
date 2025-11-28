@@ -15,15 +15,15 @@ const Status = {
   async getRecentOrders() {
     const [rows] = await pool.execute(`
     SELECT 
-      o.id AS id,
+      o.order_id AS id,
       CONCAT(u.firstname, ' ', u.lastname) AS customername,
       p.name AS productname,
-      o.totalamount AS totalamount,
-      o.status AS status
+      o.total_price AS totalamount,
+      o.order_status AS status
     FROM orders o
-    JOIN users u ON o.userid = u.id
-    JOIN products p ON o.productid = p.id
-    ORDER BY o.createdat DESC
+    JOIN users u ON o.user_id = u.id
+    JOIN products p ON o.product_id = p.id
+    ORDER BY o.created_at DESC
     LIMIT 10
   `);
 
