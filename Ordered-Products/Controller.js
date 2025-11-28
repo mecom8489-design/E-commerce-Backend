@@ -94,7 +94,7 @@ exports.createOrder = async (req, res) => {
     //   `
     // });
     const emailResponse = await apiInstance.sendTransacEmail({
-      sender: { name: "Your Shop", email: "yourshop@gmail.com" },
+      sender: { name: "Your Shop", email: "mecom8489@gmail.com" },
       to: [{ email: user_email }],
       subject: "Order Confirmation",
       htmlContent: `
