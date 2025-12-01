@@ -17,7 +17,10 @@ const getFullImageUrl = (req, imagePath) => {
 
 
 exports.createProduct = async (req, res) => {
+   console.log("DATA RECEIVED:",req.body );
   try {
+   
+
     const { name, price, rating, discount, description, category, stock, offer, thersold } = req.body;
     const image = req.file ? req.file.path : null;
 
