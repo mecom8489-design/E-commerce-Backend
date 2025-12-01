@@ -108,8 +108,8 @@ exports.createOrder = async (req, res) => {
     // });
 
     // Send Order Confirmation Email via NodeMailer
-    console.log("req",req)
-     console.log("res",res)
+    console.log("req", req)
+    console.log("res", res)
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: user_email,
@@ -133,7 +133,13 @@ exports.createOrder = async (req, res) => {
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log("Email sent successfully");
+    } catch (error) {
+      console.error("Email Error:", error);
+    }
+
 
     return res.status(201).json({
       message: "Order placed successfully & email sent",
