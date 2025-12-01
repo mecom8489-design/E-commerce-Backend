@@ -1,4 +1,5 @@
 const Order = require("./Model");
+const nodemailer = require("nodemailer");
 
 const db = require("../config/db"); // ✅ Correct path
 
@@ -13,13 +14,24 @@ const getFullImageUrl = (req, imagePath) => {
   }
 
   // Local uploads
-  return `${req.protocol}://${req.get('host')}/${imagePath.replace(/\\/g, '/')}`;
+  return `${req.protocol}://${req.get("host")}/${imagePath.replace(
+    /\\/g,
+    "/"
+  )}`;
 };
 
 // -----------------------------------------------------
 // ✅ CREATE ORDER (+ stock reduce)
 // -----------------------------------------------------
 
+// Setup nodemailer transporter (example with Gmail)
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 exports.createOrder = async (req, res) => {
   try {
@@ -39,7 +51,13 @@ exports.createOrder = async (req, res) => {
       productname,
     } = req.body;
 
-    if (!user_id || !product_id || !shipping_name || !shipping_phone || !shipping_address) {
+    if (
+      !user_id ||
+      !product_id ||
+      !shipping_name ||
+      !shipping_phone ||
+      !shipping_address
+    ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -60,10 +78,10 @@ exports.createOrder = async (req, res) => {
     const result = await Order.create(orderData);
 
     // ⭐ Reduce product stock
-    await db.query(
-      "UPDATE products SET stock = stock - ? WHERE id = ?",
-      [quantity, product_id]
-    );
+    await db.query("UPDATE products SET stock = stock - ? WHERE id = ?", [
+      quantity,
+      product_id,
+    ]);
 
     // ⭐ Send Order Confirmation Email via Resend
     // const emailResponse = await resend.emails.send({
@@ -73,35 +91,59 @@ exports.createOrder = async (req, res) => {
     //   html: `
     //     <h2>Hi ${shipping_name},</h2>
     //     <p>Thank you for your order!</p>
-    // 
+    //
     //     <p><strong>Product:</strong> ${productname}</p>
     //     <p><strong>Total Price:</strong> ₹${total_price}</p>
     //     <p><strong>Quantity:</strong> ${quantity}</p>
-    // 
+    //
     //     <h3>Shipping Details:</h3>
     //     <p><strong>Name:</strong> ${shipping_name}</p>
     //     <p><strong>Phone:</strong> ${shipping_phone}</p>
     //     <p><strong>Address:</strong> ${shipping_address}</p>
-    // 
+    //
     //     <p>We’ll notify you once your order has been shipped.</p>
     //     <br/>
     //     <p>Best Regards,<br><strong>Your Shop</strong></p>
     //   `
     // });
-    
+
+    // Send Order Confirmation Email via NodeMailer
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: user_email,
+      subject: "Order Confirmation - Thank You for Your Purchase!",
+      html: `
+        <h2>Hi ${shipping_name},</h2>
+        <p>Thank you for your order!</p>
+
+        <p><strong>Product:</strong> ${productname}</p>
+        <p><strong>Total Price:</strong> ₹${total_price}</p>
+        <p><strong>Quantity:</strong> ${quantity}</p>
+
+        <h3>Shipping Details:</h3>
+        <p><strong>Name:</strong> ${shipping_name}</p>
+        <p><strong>Phone:</strong> ${shipping_phone}</p>
+        <p><strong>Address:</strong> ${shipping_address}</p>
+
+        <p>We’ll notify you once your order has been shipped.</p>
+        <br/>
+        <p>Best Regards,<br><strong>Your Shop</strong></p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
     return res.status(201).json({
       message: "Order placed successfully & email sent",
       order_id: result.insertId,
-   
     });
-
-
   } catch (error) {
     console.error("Error creating order:", error);
-    return res.status(500).json({ message: "Internal server error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
-
 
 // -----------------------------------------------------
 // 📦 Get all orders
@@ -153,8 +195,7 @@ exports.cancelOrder = async (req, res) => {
       [order_id]
     );
 
-    if (!order)
-      return res.status(404).json({ message: "Order not found" });
+    if (!order) return res.status(404).json({ message: "Order not found" });
 
     if (order.cancelled === 1)
       return res.status(400).json({ message: "Order already cancelled" });
@@ -166,15 +207,14 @@ exports.cancelOrder = async (req, res) => {
     );
 
     // ⭐ Restore stock
-    await db.query(
-      "UPDATE products SET stock = stock + ? WHERE id = ?",
-      [order.quantity, order.product_id]
-    );
+    await db.query("UPDATE products SET stock = stock + ? WHERE id = ?", [
+      order.quantity,
+      order.product_id,
+    ]);
 
     return res.status(200).json({
       message: "Order cancelled successfully & stock restored",
     });
-
   } catch (error) {
     console.error("Cancel order error:", error);
     return res.status(500).json({ message: "Internal server error" });
