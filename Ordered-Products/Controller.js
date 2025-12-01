@@ -83,34 +83,10 @@ exports.createOrder = async (req, res) => {
       product_id,
     ]);
 
-    // ⭐ Send Order Confirmation Email via Resend
-    // const emailResponse = await resend.emails.send({
-    //   from: "Your Shop <onboarding@resend.dev>",
-    //   to: user_email,
-    //   subject: "Order Confirmation - Thank You for Your Purchase!",
-    //   html: `
-    //     <h2>Hi ${shipping_name},</h2>
-    //     <p>Thank you for your order!</p>
-    //
-    //     <p><strong>Product:</strong> ${productname}</p>
-    //     <p><strong>Total Price:</strong> ₹${total_price}</p>
-    //     <p><strong>Quantity:</strong> ${quantity}</p>
-    //
-    //     <h3>Shipping Details:</h3>
-    //     <p><strong>Name:</strong> ${shipping_name}</p>
-    //     <p><strong>Phone:</strong> ${shipping_phone}</p>
-    //     <p><strong>Address:</strong> ${shipping_address}</p>
-    //
-    //     <p>We’ll notify you once your order has been shipped.</p>
-    //     <br/>
-    //     <p>Best Regards,<br><strong>Your Shop</strong></p>
-    //   `
-    // });
-
-    // Send Order Confirmation Email via NodeMailer
-    console.log("req", req)
-    console.log("res", res)
-    const mailOptions = {
+    // ------------------------------
+    // 📩 EMAIL TO CUSTOMER
+    // ------------------------------
+    const customerMailOptions = {
       from: process.env.EMAIL_USER,
       to: user_email,
       subject: "Order Confirmation - Thank You for Your Purchase!",
@@ -133,16 +109,53 @@ exports.createOrder = async (req, res) => {
       `,
     };
 
+    // ------------------------------
+    // 📩 EMAIL TO ADMIN
+    // ------------------------------
+    const adminMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: "aahasolutionsocialmedia@gmail.com",
+      subject: "New Order Received",
+      html: `
+        <h2>New Order Alert 🚀</h2>
+
+        <h3>Customer Details:</h3>
+        <p><strong>Name:</strong> ${shipping_name}</p>
+        <p><strong>Phone:</strong> ${shipping_phone}</p>
+        <p><strong>Email:</strong> ${user_email}</p>
+        <p><strong>Address:</strong> ${shipping_address}</p>
+
+        <h3>Order Details:</h3>
+        <p><strong>Product:</strong> ${productname}</p>
+        <p><strong>Quantity:</strong> ${quantity}</p>
+        <p><strong>Price Per Unit:</strong> ₹${price_per_unit}</p>
+        <p><strong>Total Price:</strong> ₹${total_price}</p>
+        <p><strong>Payment Method:</strong> ${payment_method}</p>
+        <p><strong>Payment Status:</strong> ${payment_status}</p>
+        <p><strong>Order Status:</strong> ${order_status}</p>
+
+        <h3>Order ID:</h3>
+        <p>${result.insertId}</p>
+
+        <br/>
+        <p>Regards,<br><strong>Your Shop (System Notification)</strong></p>
+      `,
+    };
+
+    // SEND BOTH EMAILS
     try {
-      await transporter.sendMail(mailOptions);
-      console.log("Email sent successfully");
+      await transporter.sendMail(customerMailOptions);
+      console.log("Customer Email Sent");
+
+      await transporter.sendMail(adminMailOptions);
+      console.log("Admin Email Sent");
+
     } catch (error) {
       console.error("Email Error:", error);
     }
 
-
     return res.status(201).json({
-      message: "Order placed successfully & email sent",
+      message: "Order placed successfully & emails sent",
       order_id: result.insertId,
     });
   } catch (error) {
@@ -152,6 +165,7 @@ exports.createOrder = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
 
 // -----------------------------------------------------
 // 📦 Get all orders
