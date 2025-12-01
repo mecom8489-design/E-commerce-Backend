@@ -108,6 +108,8 @@ exports.createOrder = async (req, res) => {
     // });
 
     // Send Order Confirmation Email via NodeMailer
+    console.log("req",req)
+     console.log("res",res)
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: user_email,
