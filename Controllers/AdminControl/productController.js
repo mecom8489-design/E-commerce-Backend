@@ -17,9 +17,9 @@ const getFullImageUrl = (req, imagePath) => {
 
 
 exports.createProduct = async (req, res) => {
-   console.log("DATA RECEIVED:",req.body );
+  console.log("DATA RECEIVED:", req.body);
   try {
-   
+
 
     const { name, price, rating, discount, description, category, stock, offer, thersold } = req.body;
     const image = req.file ? req.file.path : null;
@@ -43,6 +43,10 @@ exports.getAllProducts = async (req, res) => {
 
     products.forEach(p => {
       p.image = getFullImageUrl(req, p.image);
+
+      if (p.stock < p.thersold) {
+        p.message = "Stock is below threshold";
+      }
 
       const offerText = p.offer ? p.offer.toLowerCase() : "";
       const offerList = offerText.split(",").map(v => v.trim());
@@ -102,7 +106,7 @@ exports.updateProduct = async (req, res) => {
     if (!existingProduct) return res.status(404).json({ message: 'Product not found' });
 
     // Delete old image if replaced
-    if (newImage && existingProduct.image) fs.unlink(existingProduct.image, () => {});
+    if (newImage && existingProduct.image) fs.unlink(existingProduct.image, () => { });
 
     const image = newImage || existingProduct.image;
     await Product.update(id, { name, price, rating, discount, description, category, stock, image, offer });
@@ -120,7 +124,7 @@ exports.deleteProduct = async (req, res) => {
     const existingProduct = await Product.getById(id);
     if (!existingProduct) return res.status(404).json({ message: 'Product not found' });
 
-    if (existingProduct.image) fs.unlink(existingProduct.image, () => {});
+    if (existingProduct.image) fs.unlink(existingProduct.image, () => { });
     await Product.delete(id);
 
     return res.status(200).json({ message: 'Product deleted successfully' });
