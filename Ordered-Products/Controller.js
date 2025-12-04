@@ -82,7 +82,25 @@ exports.createOrder = async (req, res) => {
       quantity,
       product_id,
     ]);
+    const orderId = result.insertId;
 
+    // Update delivery date (created_at + 5 days)
+    await db.query(
+      `UPDATE orders 
+   SET delivery_date = DATE_ADD(created_at, INTERVAL 5 DAY)
+   WHERE id = ?`,
+      [orderId]
+    );
+
+    await db.query(
+      `UPDATE orders 
+   SET delivery_date = DATE_ADD(created_at, INTERVAL 5 DAY)
+   WHERE id = ?`,
+      [orderId]
+    );
+
+
+    
     // ------------------------------
     // 📩 EMAIL TO CUSTOMER
     // ------------------------------

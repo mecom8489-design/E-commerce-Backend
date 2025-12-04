@@ -81,6 +81,7 @@ const Order = {
           o.order_status,
            o.Reason,
         o.cancelled,
+        o.delivery_date,
           o.created_at,
           o.updated_at,
           p.name AS product_name,
