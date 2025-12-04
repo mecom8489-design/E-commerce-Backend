@@ -242,3 +242,32 @@ exports.cancelOrder = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+exports.updateDeliveryDate = async (req, res) => {
+  try {
+    const { order_id } = req.params;
+    const { delivery_date } = req.body;
+
+    if (!delivery_date) {
+      return res.status(400).json({ message: "delivery_date is required" });
+    }
+
+    const [result] = await db.query(
+      "UPDATE orders SET delivery_date = ? WHERE order_id = ?",
+      [delivery_date, order_id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "No orders found for this user" });
+    }
+
+    return res.status(200).json({
+      message: "Delivery date updated successfully",
+      order_id,
+      delivery_date,
+    });
+
+  } catch (error) {
+    console.error("Update delivery date error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
