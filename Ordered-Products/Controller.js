@@ -83,15 +83,15 @@ exports.createOrder = async (req, res) => {
       product_id,
     ]);
 
-      const orderId = result.insertId;
+    const orderId = result.insertId;
 
-// Update delivery date (created_at + 5 days)
-await db.query(
-  `UPDATE orders 
+    // Update delivery date (created_at + 5 days)
+    await db.query(
+      `UPDATE orders 
    SET delivery_date = DATE_ADD(created_at, INTERVAL 5 DAY)
    WHERE order_id = ?`,
-  [orderId]
-);
+      [orderId]
+    );
 
 
 
@@ -240,7 +240,7 @@ exports.cancelOrder = async (req, res) => {
 
     // Mark as cancelled
     await db.query(
-      "UPDATE orders SET cancelled = 1, reason = ? WHERE order_id = ?",
+      "UPDATE orders SET cancelled = 1, reason = ?, order_status = 'Cancelled' WHERE order_id = ?",
       [reason, order_id]
     );
 
