@@ -189,7 +189,7 @@ exports.getOrderById = async (req, res) => {
     const orders = await Order.getById(id);
 
     if (!orders || orders.length === 0) {
-      return res.status(404).json({ message: "No orders found for this user" });
+      return res.status(200).json({ message: "No orders found for this user" });
     }
 
     const productsWithUrl = orders.map((p) => ({
