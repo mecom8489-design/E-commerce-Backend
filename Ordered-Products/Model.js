@@ -45,6 +45,7 @@ const Order = {
         o.payment_method,
         o.payment_status,
         o.order_status,
+        o.delivery_date,
         o.created_at,
         o.updated_at,
         p.name AS product_name,
