@@ -62,7 +62,7 @@ app.use("/api/review", review)
 
  const PORT = 3000;
 
-app.listen(PORT, "localhost", () => {
-  console.log("🚀 Server ready");
-  console.log(`Public URL → http://localhost:${PORT}`);
+app.listen(3000, "0.0.0.0", () => {
+  console.log("Server running on 0.0.0.0:3000");
 });
+ 
