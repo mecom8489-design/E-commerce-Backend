@@ -2,11 +2,11 @@ const mysql = require("mysql2/promise");
 require("dotenv").config();
  
 const pool = mysql.createPool({
-  host:"localhost",
+  host:"nozomi.proxy.rlwy.net",
   user:"root",
-  password:"",
-  database: "ecommerce_backend",
-  port:3306,
+  password:"PkdkxwDsToqFWSrcILxtjodRugRCTKdJ",
+  database: "railway",
+  port:51397,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
