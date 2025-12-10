@@ -17,6 +17,8 @@ const OrderedProducts = require("./Ordered-Products/route");
 const ExclusivelyAvailable = require("./Exclusively-Available/route")
 const search = require("./Search/route")
 const review = require("./review/routes")
+const RazorpayOrderRoute = require("./RazorpayOrderRoute.js");
+
 const app = express();
 
 // Middleware
@@ -44,25 +46,26 @@ app.use("/api/user", contactusRoutes);
 app.use("/api/ordered", OrderedProducts);
 app.use("/api/search", search)
 app.use("/api/review", review)
+app.use("/api/RazorpayOrderRoute", RazorpayOrderRoute)
 
 
 // Start server
-const PORT = process.env.PORT || 5001;
-const DOMAIN = "https://e-commerce-backend-rho-rouge.vercel.app";
+// const PORT = process.env.PORT || 5001;
+// const DOMAIN = "https://e-commerce-backend-rho-rouge.vercel.app";
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log("🚀 Server ready");
-  if (DOMAIN) {
-    console.log(`Public URL → https://${DOMAIN}`);
-  }
-});
-
-
-
-
-//  const PORT = 3000;
-
-// app.listen(3000, "0.0.0.0", () => {
-//   console.log("Server running on 0.0.0.0:3000");
+// app.listen(PORT, "0.0.0.0", () => {
+//   console.log("🚀 Server ready");
+//   if (DOMAIN) {
+//     console.log(`Public URL → https://${DOMAIN}`);
+//   }
 // });
+
+
+
+
+ const PORT = 3000;
+
+app.listen(3000, "0.0.0.0", () => {
+  console.log("Server running on 0.0.0.0:3000");
+});
  
