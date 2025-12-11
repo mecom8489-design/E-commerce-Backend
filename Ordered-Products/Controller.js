@@ -49,6 +49,9 @@ exports.createOrder = async (req, res) => {
       order_status,
       user_email,
       productname,
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
     } = req.body;
 
     if (
@@ -73,6 +76,9 @@ exports.createOrder = async (req, res) => {
       payment_method,
       payment_status,
       order_status,
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
     };
 
     const result = await Order.create(orderData);
