@@ -17,7 +17,7 @@ const OrderedProducts = require("./Ordered-Products/route");
 const ExclusivelyAvailable = require("./Exclusively-Available/route")
 const search = require("./Search/route")
 const review = require("./review/routes")
-const RazorpayOrderRoute = require("./RazorpayOrderRoute.js");
+const RazorpayOrderRoute = require("./Razorpay/route");
 
 const app = express();
 
