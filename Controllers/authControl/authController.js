@@ -92,7 +92,7 @@ exports.login = async (req, res) => {
         role: user.role,
         address: user.address,
       },
-      // token,
+       token,
     });
   } catch (error) {
     console.error("Login Error:", error);
