@@ -18,7 +18,7 @@ const ExclusivelyAvailable = require("./Exclusively-Available/route")
 const search = require("./Search/route")
 const review = require("./review/routes")
 const RazorpayOrderRoute = require("./Razorpay/route");
-
+const Allpayments = require("./Allpayments/route");
 const app = express();
 
 // Middleware
@@ -39,6 +39,7 @@ app.use("/api/admin", productRoutes);
 app.use("/api/admin", ordersRoutes);
 app.use("/api/admin", supportRoutes);
 app.use("/api/admin", ExclusivelyAvailable);
+app.use("/api/admin", Allpayments);
 
 
 //Rotes user
