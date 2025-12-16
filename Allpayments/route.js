@@ -2,6 +2,6 @@ const express = require("express");
 const router = express.Router();
 const paymentsController = require("./controller");
 
-router.get("/all", paymentsController.getAllPayments);
+router.get("/allpayments", paymentsController.getAllPayments);
 
 module.exports = router;
