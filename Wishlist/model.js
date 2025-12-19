@@ -5,14 +5,13 @@ const wishlist = {
   // ✅ Add product to wishlist
   create: async (user_id, product_id) => {
     const sql = `
-      INSERT INTO wishlist (user_id, product_id)
+      INSERT IGNORE INTO wishlist (user_id, product_id)
       VALUES (?, ?)
     `;
-
-    const values = [user_id, product_id];
-    const [result] = await db.query(sql, values);
+    const [result] = await db.query(sql, [user_id, product_id]);
     return result;
   },
+  
 
   // ✅ Get wishlist by user_id
   getWishlist: async (user_id) => {

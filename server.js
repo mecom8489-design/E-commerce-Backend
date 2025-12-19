@@ -20,6 +20,7 @@ const review = require("./review/routes")
 const RazorpayOrderRoute = require("./Razorpay/route");
 const Allpayments = require("./Allpayments/route");
 const Wishlist = require("./Wishlist/route");
+const addtocart = require("./Addtocart/route")
 const app = express();
 
 // Middleware
@@ -50,6 +51,7 @@ app.use("/api/search", search)
 app.use("/api/review", review)
 app.use("/api/RazorpayOrderRoute", RazorpayOrderRoute)
 app.use("/api/wishlist", Wishlist)
+app.use("/api/addtocart", addtocart)
 
 
 // Start server
