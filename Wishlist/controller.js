@@ -1,17 +1,34 @@
 const wishlist = require("./model");
 
 
-
 exports.saveToWishlist = async (req, res) => {
-    try {
-        const { user_id, product_id } = req.body;
-        const result = await wishlist.create(user_id, product_id);
-        return res.status(201).json(result);
-    } catch (error) {
-        console.error("Error saving to wishlist:", error);
-        return res.status(500).json({ message: "Internal server error" });
+  try {
+    const { user_id } = req.params;
+    const { products } = req.body;
+
+    if (!user_id || !Array.isArray(products)) {
+      return res.status(400).json({ message: "Invalid request data" });
     }
+
+    const results = [];
+
+    for (const product of products) {
+      const product_id = product.id;
+      const result = await wishlist.create(user_id, product_id);
+      results.push(result);
+    }
+
+    return res.status(201).json({
+      message: "Wishlist saved successfully",
+      totalAdded: results.length
+    });
+
+  } catch (error) {
+    console.error("Error saving to wishlist:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
+
 
 
 exports.getWishlist = async (req, res) => {
