@@ -50,7 +50,7 @@ exports.getaddtocart = async (req, res) => {
       const result = await addtocart.getaddtocart(user_id);
   
       if (!result || result.length === 0) {
-        return res.status(404).json({
+        return res.status(200).json({
           message: "addtocart is empty",
           data: [],
           totalPrice: 0
