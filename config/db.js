@@ -4,7 +4,7 @@ require("dotenv").config();
 const pool = mysql.createPool({
   host: process.env.DB_HOST || "sql.freedb.tech",
   user: process.env.DB_USER || "freedb_backend",
-  password:"LbmVIMYgYcLezvCDnWkxOpfHOLBVLNDc",
+  password:"",
   database: process.env.DB_NAME || "ecommerce_backend",
   port:58429,
   waitForConnections: true,

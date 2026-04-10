@@ -48,13 +48,10 @@ app.use("/api/review",review)
 
 // Start server
 const PORT = process.env.PORT || 5001;
-const DOMAIN ="e-commerce-backend-production-6fa0.up.railway.app";
+const DOMAIN = process.env.DOMAIN || "192.168.0.157";
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log("🚀 Server ready");
-  if (DOMAIN) {
-    console.log(`Public URL → https://${DOMAIN}`);
-  }
+  console.log(`🚀 Server running at http://${DOMAIN}:${PORT}`);
 });
 
 
