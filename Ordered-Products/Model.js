@@ -7,8 +7,8 @@ const Order = {
       INSERT INTO orders 
       (user_id, product_id, quantity, price_per_unit, total_price, 
        shipping_name, shipping_phone, shipping_address, payment_method, 
-       payment_status, order_status)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       payment_status, order_status, razorpay_order_id, razorpay_payment_id, razorpay_signature)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ? , ?, ?)
     `;
 
     const values = [
@@ -23,6 +23,9 @@ const Order = {
       orderData.payment_method,
       orderData.payment_status || "Pending",
       orderData.order_status || "Placed",
+      orderData.razorpay_order_id,
+      orderData.razorpay_payment_id,
+      orderData.razorpay_signature,
     ];
 
     const [result] = await db.query(sql, values);
@@ -45,6 +48,7 @@ const Order = {
         o.payment_method,
         o.payment_status,
         o.order_status,
+        o.delivery_date,
         o.created_at,
         o.updated_at,
         p.name AS product_name,
@@ -80,6 +84,7 @@ const Order = {
           o.order_status,
            o.Reason,
         o.cancelled,
+        o.delivery_date,
           o.created_at,
           o.updated_at,
           p.name AS product_name,

@@ -1,5 +1,6 @@
 const Order = require("./Model");
-const brevo = require("@getbrevo/brevo");
+const nodemailer = require("nodemailer");
+
 const db = require("../config/db"); // ✅ Correct path
 
 const getFullImageUrl = (req, imagePath) => {
@@ -13,18 +14,32 @@ const getFullImageUrl = (req, imagePath) => {
   }
 
   // Local uploads
-  return `${req.protocol}://${req.get('host')}/${imagePath.replace(/\\/g, '/')}`;
+  return `${req.protocol}://${req.get("host")}/${imagePath.replace(
+    /\\/g,
+    "/"
+  )}`;
 };
 
 // -----------------------------------------------------
 // ✅ CREATE ORDER (+ stock reduce)
 // -----------------------------------------------------
+<<<<<<< HEAD
 let apiInstance = new brevo.TransactionalEmailsApi();
 apiInstance.setApiKey(
   brevo.TransactionalEmailsApiApiKeys.apiKey,
   "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"
 );
+=======
+>>>>>>> 18883847df203b398ea2d723cc99f191c6547908
 
+// Setup nodemailer transporter (example with Gmail)
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 exports.createOrder = async (req, res) => {
   try {
@@ -42,9 +57,18 @@ exports.createOrder = async (req, res) => {
       order_status,
       user_email,
       productname,
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
     } = req.body;
 
-    if (!user_id || !product_id || !shipping_name || !shipping_phone || !shipping_address) {
+    if (
+      !user_id ||
+      !product_id ||
+      !shipping_name ||
+      !shipping_phone ||
+      !shipping_address
+    ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -60,61 +84,115 @@ exports.createOrder = async (req, res) => {
       payment_method,
       payment_status,
       order_status,
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
     };
 
     const result = await Order.create(orderData);
 
     // ⭐ Reduce product stock
+    await db.query("UPDATE products SET stock = stock - ? WHERE id = ?", [
+      quantity,
+      product_id,
+    ]);
+
+    const orderId = result.insertId;
+
+    // Update delivery date (created_at + 5 days)
     await db.query(
-      "UPDATE products SET stock = stock - ? WHERE id = ?",
-      [quantity, product_id]
+      `UPDATE orders 
+   SET delivery_date = DATE_ADD(created_at, INTERVAL 5 DAY)
+   WHERE order_id = ?`,
+      [orderId]
     );
 
-    // ⭐ Send Order Confirmation Email via Resend
-    // const emailResponse = await resend.emails.send({
-    //   from: "Your Shop <onboarding@resend.dev>",
-    //   to: user_email,
-    //   subject: "Order Confirmation - Thank You for Your Purchase!",
-    //   html: `
-    //     <h2>Hi ${shipping_name},</h2>
-    //     <p>Thank you for your order!</p>
 
-    //     <p><strong>Product:</strong> ${productname}</p>
-    //     <p><strong>Total Price:</strong> ₹${total_price}</p>
-    //     <p><strong>Quantity:</strong> ${quantity}</p>
 
-    //     <h3>Shipping Details:</h3>
-    //     <p><strong>Name:</strong> ${shipping_name}</p>
-    //     <p><strong>Phone:</strong> ${shipping_phone}</p>
-    //     <p><strong>Address:</strong> ${shipping_address}</p>
 
-    //     <p>We’ll notify you once your order has been shipped.</p>
-    //     <br/>
-    //     <p>Best Regards,<br><strong>Your Shop</strong></p>
-    //   `
-    // });
-    const emailResponse = await apiInstance.sendTransacEmail({
-      sender: { name: "Your Shop", email: "yourshop@gmail.com" },
-      to: [{ email: user_email }],
-      subject: "Order Confirmation",
-      htmlContent: `
+
+
+
+    // ------------------------------
+    // 📩 EMAIL TO CUSTOMER
+    // ------------------------------
+    const customerMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: user_email,
+      subject: "Order Confirmation - Thank You for Your Purchase!",
+      html: `
         <h2>Hi ${shipping_name},</h2>
-        <p>Thank you for your order.</p>
-        <p>Product: ${productname}</p>
-        <p>Total Price: ₹${total_price}</p>
-      `
-    });
+        <p>Thank you for your order!</p>
+
+        <p><strong>Product:</strong> ${productname}</p>
+        <p><strong>Total Price:</strong> ₹${total_price}</p>
+        <p><strong>Quantity:</strong> ${quantity}</p>
+
+        <h3>Shipping Details:</h3>
+        <p><strong>Name:</strong> ${shipping_name}</p>
+        <p><strong>Phone:</strong> ${shipping_phone}</p>
+        <p><strong>Address:</strong> ${shipping_address}</p>
+
+        <p>We’ll notify you once your order has been shipped.</p>
+        <br/>
+        <p>Best Regards,<br><strong>Your Shop</strong></p>
+      `,
+    };
+
+    // ------------------------------
+    // 📩 EMAIL TO ADMIN
+    // ------------------------------
+    const adminMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: "aahasolutionsocialmedia@gmail.com",
+      subject: "New Order Received",
+      html: `
+        <h2>New Order Alert 🚀</h2>
+
+        <h3>Customer Details:</h3>
+        <p><strong>Name:</strong> ${shipping_name}</p>
+        <p><strong>Phone:</strong> ${shipping_phone}</p>
+        <p><strong>Email:</strong> ${user_email}</p>
+        <p><strong>Address:</strong> ${shipping_address}</p>
+
+        <h3>Order Details:</h3>
+        <p><strong>Product:</strong> ${productname}</p>
+        <p><strong>Quantity:</strong> ${quantity}</p>
+        <p><strong>Price Per Unit:</strong> ₹${price_per_unit}</p>
+        <p><strong>Total Price:</strong> ₹${total_price}</p>
+        <p><strong>Payment Method:</strong> ${payment_method}</p>
+        <p><strong>Payment Status:</strong> ${payment_status}</p>
+        <p><strong>Order Status:</strong> ${order_status}</p>
+
+        <h3>Order ID:</h3>
+        <p>${result.insertId}</p>
+
+        <br/>
+        <p>Regards,<br><strong>Your Shop (System Notification)</strong></p>
+      `,
+    };
+
+    // SEND BOTH EMAILS
+    try {
+      await transporter.sendMail(customerMailOptions);
+      console.log("Customer Email Sent");
+
+      await transporter.sendMail(adminMailOptions);
+      console.log("Admin Email Sent");
+
+    } catch (error) {
+      console.error("Email Error:", error);
+    }
 
     return res.status(201).json({
-      message: "Order placed successfully & email sent",
+      message: "Order placed successfully & emails sent",
       order_id: result.insertId,
-      emailInfo: emailResponse
     });
-
-
   } catch (error) {
     console.error("Error creating order:", error);
-    return res.status(500).json({ message: "Internal server error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -141,7 +219,7 @@ exports.getOrderById = async (req, res) => {
     const orders = await Order.getById(id);
 
     if (!orders || orders.length === 0) {
-      return res.status(404).json({ message: "No orders found for this user" });
+      return res.status(200).json({ message: "No orders found for this user" });
     }
 
     const productsWithUrl = orders.map((p) => ({
@@ -169,30 +247,57 @@ exports.cancelOrder = async (req, res) => {
       [order_id]
     );
 
-    if (!order)
-      return res.status(404).json({ message: "Order not found" });
+    if (!order) return res.status(404).json({ message: "Order not found" });
 
     if (order.cancelled === 1)
       return res.status(400).json({ message: "Order already cancelled" });
 
     // Mark as cancelled
     await db.query(
-      "UPDATE orders SET cancelled = 1, reason = ? WHERE order_id = ?",
+      "UPDATE orders SET cancelled = 1, reason = ?, order_status = 'Cancelled' WHERE order_id = ?",
       [reason, order_id]
     );
 
     // ⭐ Restore stock
-    await db.query(
-      "UPDATE products SET stock = stock + ? WHERE id = ?",
-      [order.quantity, order.product_id]
-    );
+    await db.query("UPDATE products SET stock = stock + ? WHERE id = ?", [
+      order.quantity,
+      order.product_id,
+    ]);
 
     return res.status(200).json({
       message: "Order cancelled successfully & stock restored",
     });
-
   } catch (error) {
     console.error("Cancel order error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+exports.updateDeliveryDate = async (req, res) => {
+  try {
+    const { order_id } = req.params;
+    const { delivery_date } = req.body;
+
+    if (!delivery_date) {
+      return res.status(400).json({ message: "delivery_date is required" });
+    }
+
+    const [result] = await db.query(
+      "UPDATE orders SET delivery_date = ? WHERE order_id = ?",
+      [delivery_date, order_id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "No orders found for this user" });
+    }
+
+    return res.status(200).json({
+      message: "Delivery date updated successfully",
+      order_id,
+      delivery_date,
+    });
+
+  } catch (error) {
+    console.error("Update delivery date error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

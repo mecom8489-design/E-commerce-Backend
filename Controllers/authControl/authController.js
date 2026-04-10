@@ -70,16 +70,16 @@ exports.login = async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
-    // const isValid = await User.comparePasswords(password, user.password);
-    // if (!isValid) {
-    //   return res.status(401).json({ message: "Invalid email or passwordddddddddddddddddddddd" });
-    // }
+    const isValid = await User.comparePasswords(password, user.password);
+    if (!isValid) {
+      return res.status(401).json({ message: "Invalid email or passwordddddddddddddddddddddd" });
+    }
 
-    // const token = generateToken({
-    //   id: user.id,
-    //   email: user.email,
-    //   role: user.role,
-    // });
+    const token = generateToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
 
     res.status(200).json({
       message: "Login successful",
@@ -90,8 +90,9 @@ exports.login = async (req, res) => {
         email: user.email,
         mobile: user.mobile,
         role: user.role,
+        address: user.address,
       },
-      // token,
+       token,
     });
   } catch (error) {
     console.error("Login Error:", error);

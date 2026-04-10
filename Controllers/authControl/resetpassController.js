@@ -25,7 +25,7 @@ exports.requestOtp = async (req, res) => {
 
     if (!user) {
       // Security: don't reveal if email doesn't exist
-      return res.status(200).json({ message: "If email exists, OTP sent" });
+      return res.status(200).json({ message: "Email is not registered." });
     }
 
     const otp = generateOtp();
